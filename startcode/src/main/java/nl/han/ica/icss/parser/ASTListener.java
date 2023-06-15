@@ -58,7 +58,7 @@ public class ASTListener extends ICSSBaseListener {
 	}
 
 	@Override
-	public void enterTagSelector(ICSSParser.TagSelectorContext ctx){
+	public void enterSelector(ICSSParser.SelectorContext ctx){
 		ASTNode selector = null;
 		if(ctx.LOWER_IDENT() != null) {
 			selector = new TagSelector(ctx.getText());
@@ -71,7 +71,7 @@ public class ASTListener extends ICSSBaseListener {
 	}
 
 	@Override
-	public void exitTagSelector(ICSSParser.TagSelectorContext ctx) {
+	public void exitSelector(ICSSParser.SelectorContext ctx) {
 		ASTNode tagSelector = currentContainer.pop();
 		currentContainer.peek().addChild(tagSelector);
 	}
@@ -178,4 +178,26 @@ public class ASTListener extends ICSSBaseListener {
 		currentContainer.peek().addChild(varReference);
 	}
 
+	@Override
+	public void enterOperation(ICSSParser.OperationContext ctx) {
+		if(ctx.getChildCount() == 3) {
+			ASTNode operation = null;
+			if (ctx.MIN() != null) {
+				operation = new SubtractOperation();
+			} else if (ctx.PLUS() != null) {
+				operation = new AddOperation();
+			} else if (ctx.MUL() != null) {
+				operation = new MultiplyOperation();
+			}
+			currentContainer.push(operation);
+		}
+	}
+
+	@Override
+	public void exitOperation(ICSSParser.OperationContext ctx) {
+		if(ctx.PLUS() != null || ctx.MIN() != null || ctx.MUL() != null) {
+			ASTNode operation = currentContainer.pop();
+			currentContainer.peek().addChild(operation);
+		}
+	}
 }

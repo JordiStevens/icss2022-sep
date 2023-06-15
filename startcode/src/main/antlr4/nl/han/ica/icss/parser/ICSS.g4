@@ -56,7 +56,7 @@ varDeclaration: varReference ASSIGNMENT_OPERATOR value SEMICOLON;
 declaration: propertyName COLON value SEMICOLON;
 
 propertyName: LOWER_IDENT;
-value: expression | operation;
+value: literal | operation;
 
 
 boolLiteral: TRUE | FALSE;
@@ -65,13 +65,11 @@ pixelLiteral: PIXELSIZE;
 percentageLiteral: PERCENTAGE;
 scalarLiteral: SCALAR;
 
-literal: boolLiteral | colorLiteral | pixelLiteral | percentageLiteral | scalarLiteral;
+literal: boolLiteral | colorLiteral | pixelLiteral | percentageLiteral | scalarLiteral | varReference;
 
 varReference: CAPITAL_IDENT;
 
-expression: (literal | varReference);
-
-operation: operation MUL operation | operation (PLUS | MIN) operation | expression;
+operation: operation MUL operation | operation (PLUS | MIN) operation | literal;
 
 ifStatement: IF BOX_BRACKET_OPEN (varReference | boolLiteral) BOX_BRACKET_CLOSE
     OPEN_BRACE body CLOSE_BRACE
