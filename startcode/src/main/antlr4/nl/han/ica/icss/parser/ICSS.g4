@@ -45,5 +45,37 @@ ASSIGNMENT_OPERATOR: ':=';
 
 
 //--- PARSER: ---
-stylesheet: EOF;
+stylesheet: varDeclaration* styleRule*  EOF;
+
+styleRule: selector OPEN_BRACE body CLOSE_BRACE;
+
+selector: LOWER_IDENT | ID_IDENT | CLASS_IDENT;
+body: (varDeclaration | declaration | ifStatement)*;
+
+varDeclaration: varReference ASSIGNMENT_OPERATOR value SEMICOLON;
+declaration: propertyName COLON value SEMICOLON;
+
+propertyName: LOWER_IDENT;
+value: expression | operation;
+
+
+boolLiteral: TRUE | FALSE;
+colorLiteral: COLOR;
+pixelLiteral: PIXELSIZE;
+percentageLiteral: PERCENTAGE;
+scalarLiteral: SCALAR;
+
+literal: boolLiteral | colorLiteral | pixelLiteral | percentageLiteral | scalarLiteral;
+
+varReference: CAPITAL_IDENT;
+
+expression: (literal | varReference);
+
+operation: operation MUL operation | operation (PLUS | MIN) operation | expression;
+
+ifStatement: IF BOX_BRACKET_OPEN (varReference | boolLiteral) BOX_BRACKET_CLOSE
+    OPEN_BRACE body CLOSE_BRACE
+    elseStatement ?;
+
+elseStatement: ELSE OPEN_BRACE body CLOSE_BRACE;
 

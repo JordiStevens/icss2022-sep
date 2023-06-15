@@ -8,11 +8,11 @@ public class ListNode<T>  {
         this.value = value;
     }
 
-    public T getElement() {
+    public T getValue() {
         return value;
     }
 
-    public void setElement(T element) {
+    public void setValue(T element) {
         this.value = element;
     }
 

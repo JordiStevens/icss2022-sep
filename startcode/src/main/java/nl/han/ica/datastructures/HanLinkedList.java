@@ -26,7 +26,7 @@ public class HanLinkedList<T> implements IHANLinkedList<T> {
 
     @Override
     public T getFirst() {
-        return header.getNext().getElement();
+        return header.getNext().getValue();
     }
 
     @Override
@@ -42,7 +42,7 @@ public class HanLinkedList<T> implements IHANLinkedList<T> {
 
     public void insert(int index, T value){
         ListNode<T> temp = new ListNode<T>(value);
-        temp.setElement(value);
+        temp.setValue(value);
         ListNode<T> current = header.getNext();
         if(index < 0){
             throw new IndexOutOfBoundsException();
@@ -89,7 +89,7 @@ public class HanLinkedList<T> implements IHANLinkedList<T> {
                 current = current.getNext();
             }
 
-            return current.getElement();
+            return current.getValue();
         }
         return null;
     }
