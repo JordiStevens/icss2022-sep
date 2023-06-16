@@ -8,16 +8,18 @@ import nl.han.ica.icss.ast.types.ExpressionType;
 public class VariableChecker {
 
     ScopeTable<String, ExpressionType> scopes;
+    ExpressionHandler expressionHandler;
 
-    public VariableChecker(ScopeTable<String, ExpressionType> scopes){
+    public VariableChecker(ScopeTable<String, ExpressionType> scopes, ExpressionHandler expressionHandler){
         this.scopes = scopes;
+        this.expressionHandler = expressionHandler;
     }
 
     public void checkVariableAssignment(VariableAssignment variableAssignment) {
         VariableReference variableReference = variableAssignment.name;
-        ExpressionType expressionType = variableAssignment.getExpressionType();
-        if(expressionType == null || expressionType == ExpressionType.UNDEFINED){
-            variableAssignment.setError("The variable assignment is not valid because of a faulty Expression type");
+        ExpressionType expressionType = expressionHandler.getExpressionTypeOfExpression(variableAssignment.expression);
+        if(expressionType == null){
+            variableAssignment.setError("The variable assignment of " + variableReference.name + " is not valid because of a faulty Expression type");
             return;
         }
         ExpressionType previousType = scopes.getVariableValue(variableReference.name);

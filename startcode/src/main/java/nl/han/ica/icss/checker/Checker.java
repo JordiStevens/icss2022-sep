@@ -20,7 +20,7 @@ public class Checker {
         this.scopes = new ScopeTable<>();
         this.expressionHandler = new ExpressionHandler(scopes);
         this.declarationChecker = new DeclarationChecker(expressionHandler);
-        this.variableChecker = new VariableChecker(scopes);
+        this.variableChecker = new VariableChecker(scopes, expressionHandler);
     }
 
     public void check(AST ast) {
