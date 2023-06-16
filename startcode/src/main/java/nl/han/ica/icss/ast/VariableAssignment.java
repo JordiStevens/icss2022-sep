@@ -1,5 +1,7 @@
 package nl.han.ica.icss.ast;
 
+import nl.han.ica.icss.ast.types.ExpressionType;
+
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -52,5 +54,9 @@ public class VariableAssignment extends ASTNode {
 	@Override
 	public int hashCode() {
 		return Objects.hash(name, expression);
+	}
+
+	public ExpressionType getExpressionType(){
+		return expression.getExpressionType();
 	}
 }
