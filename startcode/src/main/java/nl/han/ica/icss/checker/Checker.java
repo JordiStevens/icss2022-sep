@@ -43,7 +43,9 @@ public class Checker {
                 checkIfStatement(bodyNode);
             }
             // declaration
-
+            if(bodyNode instanceof Declaration){
+                checkDeclaration(bodyNode);
+            }
         }
     }
 
@@ -66,9 +68,7 @@ public class Checker {
     private void checkIfStatement(ASTNode node){
         IfClause ifClause = (IfClause) node;
         scopes.openScope();
-        // Check if the condition is of type Boolean
         checkIfStatementExpressionType(ifClause);
-        // Check the body of the if clause
         checkStyleBody(ifClause.body);
 
         if(ifClause.elseClause != null){
@@ -77,6 +77,7 @@ public class Checker {
         scopes.closeScope();
     }
 
+    //CH05
     private void checkIfStatementExpressionType(IfClause ifClause){
         Expression expression = ifClause.conditionalExpression;
         ExpressionType expressionType = getExpressionTypeOfExpression(expression);
@@ -85,18 +86,55 @@ public class Checker {
         }
     }
 
+    //CH01 & CH06
     private ExpressionType getExpressionTypeOfExpression(Expression expression){
         ExpressionType expressionType;
         if(expression instanceof VariableReference){
             VariableReference variableReference = (VariableReference) expression;
             expressionType = scopes.getVariableValue(variableReference.name);
-            if(expressionType == null){
+            if(expressionType == null || expressionType == ExpressionType.UNDEFINED){
                 expression.setError("Variable " + variableReference.name + " is not defined!");
             }
         } else {
             expressionType = expression.getExpressionType();
         }
         return expressionType;
+    }
+
+    // CH04
+    private void checkDeclaration(ASTNode declarationNode){
+        Declaration declaration = (Declaration) declarationNode;
+        ExpressionType expressionType = getExpressionTypeOfExpression(declaration.expression);
+        String name = declaration.property.name;
+        String errorMessage = null;
+        switch (name) {
+            case "background-color":
+                if (expressionType != ExpressionType.COLOR) {
+                    errorMessage = "The background-color property can only contain a color literal.";
+                }
+                break;
+            case "width":
+                if (expressionType != ExpressionType.PIXEL && expressionType != ExpressionType.PERCENTAGE) {
+                    errorMessage = "The width property can only contain a pixel or percentage literal.";
+                }
+                break;
+            case "color":
+                if (expressionType != ExpressionType.COLOR) {
+                    errorMessage = "The color property can only contain a color literal.";
+                }
+                break;
+            case "height":
+                if (expressionType != ExpressionType.PIXEL && expressionType != ExpressionType.PERCENTAGE) {
+                    errorMessage = "The height property can only contain a pixel or percentage literal.";
+                }
+                break;
+            default:
+                errorMessage = "The property " + name + " is not a valid property";
+        }
+
+        if (errorMessage != null) {
+            declaration.setError(errorMessage);
+        }
     }
 
 }
